@@ -15,12 +15,14 @@ Pliki znajdą się w folderze `arkusze/` w aktualnej ścieżce.
 
 ## Struktura plików
 
+```
 arkusze/
 |--przedmiot/
     |--pytania/ - główne arkusze
     |--odpowiedzi/ - karty z odpowiedziami
     |--transkrypcje/ - transkrypcje dla języków obcych
     |--dodatki/ - informatory, tablice, wzory, mapy
+```
 
 ## Nazewnictwo plików
 
