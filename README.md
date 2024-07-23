@@ -9,8 +9,9 @@ Pobiera wszystkie arkusze maturalne w formacie PDF z Arkusze.pl, normalizuje naz
 
 ## Uruchomienie
 ```shell
-go run .
+go run . [przedmiot]
 ```
+Podanie przedmiotu jest opcjonalne, domyślnie wszystkie będą pobrane.
 Pliki znajdą się w folderze `arkusze/` w aktualnej ścieżce.
 
 ## Struktura plików

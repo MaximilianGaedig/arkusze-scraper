@@ -21,6 +21,11 @@ func main() {
 		colly.UserAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"),
 	)
 
+	subjectFilter := ""
+	if len(os.Args) > 1 {
+		subjectFilter = os.Args[1]
+	}
+
 	c.OnHTML(".msgbox-arkusz", func(e *colly.HTMLElement) {
 		link, ok := e.DOM.Children().Attr("href")
 		if !ok {
@@ -53,7 +58,7 @@ func main() {
 			}
 
 			// ignore/use for directory picking
-			if slices.Contains([]string{"poziom", "nowa", "odpowiedzi", "transkrypcja", "maturalny", "matura", "podstawowa", "podstawowy", "arkusz", "przykladowy", "cke", "egzamin", "wstepny", "na", "i", "stale"}, part) {
+			if slices.Contains([]string{"poziom", "nowa", "odpowiedzi", "transkrypcja", "maturalny", "matura", "podstawowa", "podstawowy", "arkusz", "cke", "egzamin", "wstepny", "na", "i", "stale"}, part) {
 				continue
 			}
 
@@ -70,11 +75,13 @@ func main() {
 			}
 
 			// attributes
-			if slices.Contains([]string{"stara", "probna", "rozszerzona", "rozszerzony", "poprawkowa", "era", "operon", "aneks", "studia", "dwujezyczna", "wzory", "tablice", "mapa", "informator"}, part) {
+			if slices.Contains([]string{"stara", "probna", "przykladowy", "rozszerzona", "rozszerzony", "poprawkowa", "era", "operon", "aneks", "studia", "dwujezyczna", "wzory", "tablice", "mapa", "informator"}, part) {
 				if part == "era" {
 					attributes = append(attributes, "nowa_era")
 				} else if part == "roszerzony" {
 					attributes = append(attributes, "rozszerzona")
+				} else if part == "przykladowy" {
+					attributes = append(attributes, "przykladowa")
 				} else {
 					attributes = append(attributes, part)
 				}
@@ -84,15 +91,24 @@ func main() {
 
 			y, err := strconv.ParseInt(part, 10, 32)
 			if err == nil {
-				year = int(y)
+				if y > 1000 {
+					year = int(y)
+				} else {
+					attributes = append(attributes, part) // for identifiers like 2
+				}
 				continue
 			}
+
 			subject += part
 			subject += "_"
 		}
 
 		if subject != "" {
 			subject = subject[0 : len(subject)-1]
+		}
+
+		if subjectFilter != "" && subject != subjectFilter {
+			return
 		}
 
 		slices.Sort(attributes)
@@ -130,7 +146,7 @@ func main() {
 				panic(err)
 			}
 
-			fmt.Printf("downloaded %s\n", destinationFile)
+			fmt.Printf("%s -> %s\n", link, destinationFile)
 		}
 	})
 
