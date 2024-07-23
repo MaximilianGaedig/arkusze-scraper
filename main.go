@@ -108,6 +108,7 @@ func main() {
 		}
 
 		if subjectFilter != "" && subject != subjectFilter {
+			fmt.Printf("X %s\n", link)
 			return
 		}
 
@@ -147,6 +148,8 @@ func main() {
 			}
 
 			fmt.Printf("%s -> %s\n", link, destinationFile)
+		} else {
+			fmt.Printf("%s * %s\n", link, destinationFile)
 		}
 	})
 
